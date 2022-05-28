@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import { config } from "dotenv";
+import router from "../router";
 
 config();
 
@@ -10,7 +11,7 @@ const initServer = () => {
 
   server.use(cors());
   server.use(helmet());
-
+  server.use("/api", router);
   server.get("/", (req: Request, res: Response) => {
     res.status(200).send("Welcome to the expense tracker app.");
   });
