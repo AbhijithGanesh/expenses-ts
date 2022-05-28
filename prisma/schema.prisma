@@ -1,0 +1,28 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Mode_of_payment {
+  id                 Int          @id @default(autoincrement())
+  mode               String?      @unique
+  name               String?
+  associated_partner String[]
+  createdAt          DateTime
+  transaction        transaction? @relation(fields: [transactionId], references: [id])
+  transactionId      Int?
+}
+
+model transaction {
+  id             Int               @id @default(autoincrement())
+  transaction_id Int
+  modes          Mode_of_payment[]
+
+}
