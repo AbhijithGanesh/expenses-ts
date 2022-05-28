@@ -11,18 +11,31 @@ datasource db {
 }
 
 model Mode_of_payment {
-  id                 Int          @id @default(autoincrement())
-  mode               String?      @unique
+  id                 Int           @id @default(autoincrement())
+  mode               String?       @unique
   name               String?
   associated_partner String[]
   createdAt          DateTime
-  transaction        transaction? @relation(fields: [transactionId], references: [id])
-  transactionId      Int?
+  transactions       transaction[]
+  User               User?         @relation(fields: [userId], references: [id])
+  userId             Int?
 }
 
 model transaction {
-  id             Int               @id @default(autoincrement())
-  transaction_id Int
-  modes          Mode_of_payment[]
+  id               Int      @id @default(autoincrement())
+  transaction_id   Int
+  transaction_date DateTime
+  transaction_name String?
 
+  Mode_of_payment   Mode_of_payment? @relation(fields: [mode_of_paymentId], references: [id])
+  mode_of_paymentId Int?
+}
+
+model User {
+  email    String?
+  name     String?
+  password String?
+  username String?
+  id       Int               @id @default(autoincrement())
+  modes    Mode_of_payment[]
 }
