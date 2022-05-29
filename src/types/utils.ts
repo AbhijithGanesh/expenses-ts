@@ -1,6 +1,6 @@
 
 interface payload {
-    tag: String,    
-    user_object: String,
+    tag: string,    
+    user_object: string,
 }
 export default payload

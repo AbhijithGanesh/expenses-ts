@@ -1,7 +1,7 @@
 interface BaseUser {
   name: string;
   username: string;
-  email: string;
+  email: string ; 
 }
 interface User extends BaseUser {
   password: string;
