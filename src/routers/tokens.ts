@@ -1,7 +1,6 @@
 import type { Token } from "@prisma/client";
 import { Request, Router, Response } from "express";
 import { validateToken } from "../plugin/authentication";
-import type { BaseUser, User } from "../types/users";
 import { client } from "../utils/database";
 
 let token: Router = Router();
@@ -19,6 +18,10 @@ token.get(
       let user_object = await client.user.findUnique({
         where: {
           id: search_object.id,
+        },
+        select: {
+          username: true,
+          name: true,
         },
       });
 

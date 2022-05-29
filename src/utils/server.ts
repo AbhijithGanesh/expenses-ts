@@ -1,5 +1,6 @@
 import express, { Express, Request, Response } from "express";
 import cors from "cors";
+import { init } from "express-oas-generator";
 import helmet from "helmet";
 import service from "./mails";
 import { config } from "dotenv";
@@ -23,6 +24,7 @@ const initServer = () => {
   server.listen(process.env?.PORT, () => {
     console.log(`server is listening on port ${process.env?.PORT}`);
   });
+  // init(server)
 };
 
 export default initServer;

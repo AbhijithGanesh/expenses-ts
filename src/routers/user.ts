@@ -21,7 +21,7 @@ users.get("/token", async (req: Request, res: Response): Promise<void> => {
       email: user_object.email,
     },
   });
-
+  console.log(search_object);
   if (search_object != null) {
     if (compareSync(user_object.password, search_object!.password!) == true) {
       const token_obj = generate_token(user_object);
@@ -30,6 +30,7 @@ users.get("/token", async (req: Request, res: Response): Promise<void> => {
           token: token_obj,
           createdAt: new Date(Date.now()),
           userId: search_object.id,
+          valid: true,
         },
       });
       res.status(200).send({ token: token_obj });
@@ -65,15 +66,19 @@ users.post("/create", async (req: Request, res: Response): Promise<void> => {
     email: req.body?.email,
     password: hashSync(req.body?.password, genSaltSync(10)),
   };
-  let obj = await client.user.create({
-    data: user_object,
-  });
-  if (obj) {
-    res.status(200).send({ message: "Object created succesfully." });
-  } else {
-    res.status(400).send({
-      message: `Object with username ${user_object.username} was not created.`,
+  try {
+    let obj = await client.user.create({
+      data: user_object,
     });
+    if (obj) {
+      res.status(200).send({ message: "Object created succesfully." });
+    } else {
+      res.status(400).send({
+        message: `Object with username ${user_object.username} was not created.`,
+      });
+    }
+  } catch (PrismaClientUnknownRequestError) {
+    res.status(406).send("Object already exists");
   }
 });
 
@@ -123,4 +128,22 @@ users.get("/username", async (req: Request, res: Response): Promise<void> => {
   res.status(200).send(user_object);
 });
 
+users.get(
+  "/update-password",
+  async (req: Request, res: Response): Promise<void> => {
+    let obj = await client.user.update({
+      where: {
+        username: req.body?.username,
+      },
+      data: {
+        password: hashSync(req.body?.password, genSaltSync(10)),
+      },
+    });
+    if (obj) {
+      res.status(202).send({
+        Message: `Your ${req.params?.param} was updated succesfully. `,
+      });
+    }
+  }
+);
 export default users;
