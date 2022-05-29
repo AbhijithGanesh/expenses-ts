@@ -1,6 +1,10 @@
-export type User = {
+interface BaseUser {
   name: string;
   username: string;
-  password: string;
   email: string;
-};
+}
+interface User extends BaseUser {
+  password: string;
+}
+
+export { User, BaseUser };

@@ -14,4 +14,4 @@ let database_disconnect = async (): Promise<void> => {
   await client.$disconnect();
 };
 
-export { database_connect, database_disconnect };
+export { client, database_connect, database_disconnect };

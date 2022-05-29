@@ -1,6 +1,6 @@
 import { json, Router } from "express";
 import modes from "./routers/modes";
-import { PaymentRouter } from "./Routers/payments";
+import { PaymentRouter } from "./routers/payments";
 import users from "./routers/user";
 
 const router: Router = Router();
