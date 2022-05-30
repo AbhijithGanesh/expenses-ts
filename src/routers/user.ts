@@ -9,7 +9,7 @@ import { validateToken } from "../plugin/authentication";
 const users: Router = Router();
 users.use(json());
 
-users.get("/token", async (req: Request, res: Response): Promise<void> => {
+users.get("/bearer/jwt/token", async (req: Request, res: Response): Promise<void> => {
   let user_object: User | null = {
     username: req.body?.username,
     name: req.body?.name,
