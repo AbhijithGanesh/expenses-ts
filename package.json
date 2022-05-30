@@ -24,6 +24,7 @@
     "helmet": "^5.1.0",
     "jsonwebtoken": "^8.5.1",
     "nodemon": "^2.0.16",
+    "redoc-express": "^1.0.0",
     "ts-node": "^10.8.0"
   },
   "devDependencies": {

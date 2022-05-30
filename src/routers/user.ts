@@ -1,5 +1,5 @@
-import e, { json, Router, Request, Response, response } from "express";
-import type { BaseUser, User } from "../types/users";
+import { json, Router, Request, Response, response } from "express";
+import type { User } from "../types/users";
 import type { User as modelUser } from "@prisma/client";
 import { hashSync, genSaltSync, compare, compareSync } from "bcrypt";
 import { client } from "../utils/database";
@@ -10,7 +10,7 @@ const users: Router = Router();
 users.use(json());
 
 users.get("/token", async (req: Request, res: Response): Promise<void> => {
-  let user_object: User = {
+  let user_object: User | null = {
     username: req.body?.username,
     name: req.body?.name,
     email: req.body?.email,
@@ -30,7 +30,6 @@ users.get("/token", async (req: Request, res: Response): Promise<void> => {
           token: token_obj,
           createdAt: new Date(Date.now()),
           userId: search_object.id,
-          valid: true,
         },
       });
       res.status(200).send({ token: token_obj });

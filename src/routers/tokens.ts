@@ -2,8 +2,10 @@ import type { Token } from "@prisma/client";
 import { Request, Router, Response } from "express";
 import { validateToken } from "../plugin/authentication";
 import { client } from "../utils/database";
+import analysis from "./token-analysis";
 
 let token: Router = Router();
+token.use("/reports", validateToken, analysis);
 
 token.get(
   "/:id",

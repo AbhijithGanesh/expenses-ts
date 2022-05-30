@@ -2,20 +2,21 @@ import { json, Request, Router, Response } from "express";
 import { validateToken } from "../plugin/authentication";
 import { client } from "../utils/database";
 import { Mode_of_payment, transaction } from "@prisma/client";
-import id_generator from "../plugin/transactions";
 import { Mode } from "../types/Modes";
 
 import type { payments as payment_type } from "../types/payments";
+import group from "./payments-analysis";
 
 const payments: Router = Router();
 payments.use(json());
+payments.use("/analysis", validateToken, group);
 
 payments.post(
   "/create",
   validateToken,
   async (req: Request, res: Response): Promise<void> => {
     let instance: payment_type = {
-      transaction_id: id_generator(req.body?.name) as string,
+      transaction_id: req.body?.transaction_id,
       transaction_date: new Date(req.body?.date),
       transaction_name: req.body?.name,
       Mode: req.body?.mode as Mode,
@@ -65,9 +66,75 @@ payments.get(
 );
 
 payments.put(
-  "/update/:id",
+  "/update/date/",
   validateToken,
-  async (req: Request, res: Response): Promise<void> => {}
+  async (req: Request, res: Response): Promise<void> => {
+    let instance: transaction | null = await client.transaction.update({
+      where: {
+        transaction_id: req.body?.id,
+      },
+      data: {
+        transaction_date: new Date(req.body?.date),
+      },
+    });
+    if (instance) {
+      res
+        .status(200)
+        .send({ Message: "Object was updated succesfully", data: instance });
+    } else {
+      res.status(406).send({ Message: "Object was not updated succesfully" });
+    }
+  }
+);
+
+payments.put(
+  "/update/mode/",
+  validateToken,
+  async (req: Request, res: Response): Promise<void> => {
+    const search_object: Mode_of_payment | null =
+      await client.mode_of_payment.findUnique({
+        where: {
+          mode: req.body?.mode,
+        },
+      });
+    let instance: transaction | null = await client.transaction.update({
+      where: {
+        transaction_id: req.body?.id,
+      },
+      data: {
+        mode_of_paymentId: search_object!.id,
+      },
+    });
+    if (instance) {
+      res
+        .status(200)
+        .send({ Message: "Object was updated succesfully", data: instance });
+    } else {
+      res.status(406).send({ Message: "Object was not updated succesfully" });
+    }
+  }
+);
+
+payments.put(
+  "/update/name/",
+  validateToken,
+  async (req: Request, res: Response): Promise<void> => {
+    let instance: transaction | null = await client.transaction.update({
+      where: {
+        transaction_id: req.body?.id,
+      },
+      data: {
+        mode_of_paymentId: req.body?.name,
+      },
+    });
+    if (instance) {
+      res
+        .status(200)
+        .send({ Message: "Object was updated succesfully", data: instance });
+    } else {
+      res.status(406).send({ Message: "Object was not updated succesfully" });
+    }
+  }
 );
 
 payments.delete(

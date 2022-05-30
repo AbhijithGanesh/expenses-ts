@@ -1633,6 +1633,11 @@ readdirp@~3.6.0:
   dependencies:
     picomatch "^2.2.1"
 
+redoc-express@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/redoc-express/-/redoc-express-1.0.0.tgz#2b4f684293adc83f5af3461b583f7f9350bd0e0f"
+  integrity sha512-N/0/WrA6U2rJc9hzLy2Jh2CHrQttIcW02jE4xGCiKkU40uTlpFTcEfu9bpsJlTcpffPXVNhhaIbTwz8kxz+M5A==
+
 reftools@^1.1.9:
   version "1.1.9"
   resolved "https://registry.yarnpkg.com/reftools/-/reftools-1.1.9.tgz#e16e19f662ccd4648605312c06d34e5da3a2b77e"
