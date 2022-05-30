@@ -8,7 +8,7 @@ let token: Router = Router();
 token.use("/reports", validateToken, analysis);
 
 token.get(
-  "/:id",
+  "/get-by-id/:id",
   validateToken,
   async (req: Request, res: Response): Promise<void> => {
     let search_object: Token | null = await client.token.findUnique({

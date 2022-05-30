@@ -1,10 +1,12 @@
+import { Mode_of_payment } from "@prisma/client";
 import { Router, Request, Response } from "express";
 import { client } from "../utils/database";
 
 const group: Router = Router();
 
 group.get("/name", async (req: Request, res: Response): Promise<void> => {
-  let instance = await client.transaction.findMany({
+  let instance = await client.transaction.groupBy({
+    by: ["transaction_name"],
     where: {
       transaction_name: req.body?.name,
     },
@@ -17,10 +19,8 @@ group.get("/name", async (req: Request, res: Response): Promise<void> => {
 });
 
 group.get("/date", async (req: Request, res: Response): Promise<void> => {
-  let instance = await client.transaction.findMany({
-    where: {
-      transaction_date: new Date(req.body?.date),
-    },
+  let instance = await client.transaction.groupBy({
+    by: ["transaction_date"],
   });
   if (instance) {
     res.status(200).send(instance);
@@ -30,12 +30,18 @@ group.get("/date", async (req: Request, res: Response): Promise<void> => {
 });
 
 group.get("/mode", async (req: Request, res: Response): Promise<void> => {
-  let mode = await client.transaction.findUnique({
-    where: { id: req.body?.Mode },
-  });
-  let instance = await client.transaction.findMany({
+  let mode_obj: Mode_of_payment | null = await client.mode_of_payment.findFirst(
+    {
+      where: {
+        mode: req.body?.mode,
+      },
+    }
+  );
+
+  let instance = await client.transaction.groupBy({
+    by: ["mode_of_paymentId"],
     where: {
-      mode_of_paymentId: mode!.id,
+      mode_of_paymentId: mode_obj!.id,
     },
   });
   if (instance) {

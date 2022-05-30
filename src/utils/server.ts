@@ -12,21 +12,21 @@ config();
 
 const initServer = () => {
   const server: Express = express();
-  server.get("/docs/swagger.json", (req, res) => {
-    res.sendFile("swagger.json", { root: "./" });
-  });
-  server.get(
-    "/docs",
-    redoc({
-      title: "API Docs",
-      specUrl: "/docs/swagger.json",
-    })
-  );
+  // server.get("/docs/swagger.json", (req, res) => {
+  //   res.sendFile("swagger.json", { root: "./" });
+  // });
+  // server.get(
+  //   "/docs",
+  //   redoc({
+  //     title: "API Docs",
+  //     specUrl: "/docs/swagger.json",
+  //   })
+  // );
   server.use(cors());
   server.use(helmet());
   server.use("/api", router);
   server.use("/access", service);
-  server.use("/checks", token);
+  server.use("/access-logs", token);
   server.get("/", (req: Request, res: Response) => {
     res.status(200).send("Welcome to the expense tracker app.");
   });
@@ -34,7 +34,7 @@ const initServer = () => {
   server.listen(process.env?.PORT, () => {
     console.log(`server is listening on port ${process.env?.PORT}`);
   });
-  // init(server)
+  init(server);
 };
 
 export default initServer;

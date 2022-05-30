@@ -43,7 +43,7 @@ users.get("/token", async (req: Request, res: Response): Promise<void> => {
   }
 });
 users.get(
-  "by-id/:id",
+  "/get-by-id/:id",
   validateToken,
   async (req: Request, res: Response): Promise<void> => {
     let search_object = await client.user.findUnique({
@@ -81,13 +81,12 @@ users.post("/create", async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-users.put(
-  "/update/:param",
+users.patch(
+  "/update/username",
+  validateToken,
   async (req: Request, res: Response): Promise<void> => {
     let user_object = {
       username: req.body?.username,
-      email: req.body?.email,
-      name: req.body?.name,
     };
 
     let obj = await client.user.update({
@@ -96,39 +95,94 @@ users.put(
       },
       data: {
         username: user_object.username,
-        name: user_object.name,
-        email: user_object.email,
       },
     });
     if (obj) {
       res.status(202).send({
-        Message: `Your ${req.params?.param} was updated succesfully. `,
+        Message: `Your Username was updated succesfully. `,
       });
     }
   }
 );
-users.delete("/:id", async (req: Request, res: Response): Promise<void> => {
-  let user_object = await client.user.delete({
-    where: { id: Number(req.params.id) },
-  });
-  if (user_object) {
-    res.status(201).send({ Message: "User object was deleted" });
-  } else {
-    res.status(304).send({ Message: "Not modified" });
-  }
-});
+users.patch(
+  "/update/name",
+  validateToken,
+  async (req: Request, res: Response): Promise<void> => {
+    let user_object = {
+      username: req.body?.username,
+      name: req.body?.name,
+    };
 
-users.get("/username", async (req: Request, res: Response): Promise<void> => {
-  let user_object = await client.user.findUnique({
-    where: {
-      username: req.body.username,
-    },
-  });
-  res.status(200).send(user_object);
-});
+    let obj = await client.user.update({
+      where: {
+        username: user_object.username,
+      },
+      data: {
+        name: user_object.name,
+      },
+    });
+    if (obj) {
+      res.status(202).send({
+        Message: `Your Name was updated succesfully. `,
+      });
+    }
+  }
+);
+users.patch(
+  "/update/email",
+  validateToken,
+  async (req: Request, res: Response): Promise<void> => {
+    let user_object = {
+      username: req.body?.username,
+      email: req.body?.email,
+    };
+
+    let obj = await client.user.update({
+      where: {
+        username: user_object.username,
+      },
+      data: {
+        name: user_object.email,
+      },
+    });
+    if (obj) {
+      res.status(202).send({
+        Message: `Your E-mail was updated succesfully. `,
+      });
+    }
+  }
+);
+users.delete(
+  "/username",
+  validateToken,
+  async (req: Request, res: Response): Promise<void> => {
+    let user_object = await client.user.delete({
+      where: { username: req.body?.username },
+    });
+    if (user_object) {
+      res.status(201).send({ Message: "User object was deleted" });
+    } else {
+      res.status(304).send({ Message: "Not modified" });
+    }
+  }
+);
+
+users.get(
+  "/get-by-username",
+  validateToken,
+  async (req: Request, res: Response): Promise<void> => {
+    let user_object = await client.user.findUnique({
+      where: {
+        username: req.body.username,
+      },
+    });
+    res.status(200).send(user_object);
+  }
+);
 
 users.get(
   "/update-password",
+  validateToken,
   async (req: Request, res: Response): Promise<void> => {
     let obj = await client.user.update({
       where: {

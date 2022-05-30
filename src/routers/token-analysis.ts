@@ -1,10 +1,9 @@
-import { Token, User } from "@prisma/client";
 import { Request, Router, Response } from "express";
 import { client } from "../utils/database";
 
 const analysis: Router = Router();
 
-analysis.use(
+analysis.get(
   "/username",
   async (req: Request, res: Response): Promise<void> => {
     let user = await client.user.findUnique({
